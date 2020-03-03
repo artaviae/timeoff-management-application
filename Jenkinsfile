@@ -8,7 +8,7 @@ pipeline {
                 sh "\$(aws ecr get-login --no-include-email --region us-east-1)"
                 echo "Cleaning Docker Environment"
                 sh "docker image prune -a -f"
-                sh "docker container prune -f
+                sh "docker container prune -f"
             }
         }        
         stage('Build') {
