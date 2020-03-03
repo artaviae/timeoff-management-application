@@ -2,7 +2,7 @@
     "family": "time-off",
     "containerDefinitions": [
         {
-            "image": "755100727753.dkr.ecr.us-east-1.amazonaws.com/time-off:v_%BUILD_NUMBER%",
+            "image": "755100727753.dkr.ecr.us-east-1.amazonaws.com/time-off:latest",
             "name": "time-off",
             "cpu": 10,
             "memory": 256,
