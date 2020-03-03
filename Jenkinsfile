@@ -9,6 +9,8 @@ pipeline {
                 echo "Cleaning Docker Environment"
                 sh "docker image prune -a -f"
                 sh "docker container prune -f"
+                sh "mkdir application && cp Dockerfile application/ && cd application"
+                sh "pwd"
             }
         }        
         stage('Build') {
@@ -28,7 +30,7 @@ pipeline {
         stage('Deploy'){
             steps {
                 echo "Generating new Task Definition and updating Service"
-                sh "taskDefGenerator"
+                sh "../taskDefGenerator"
             }
         }
     }
