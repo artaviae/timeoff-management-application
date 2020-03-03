@@ -1,0 +1,150 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "CloudFormation template for microservices cluster ASG",
+
+  "Parameters": {
+    "KeyName": {
+      "Description": "Name of an existing EC2 KeyPair to enable access to the instance",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Default": "personal",
+      "ConstraintDescription": "must be the name of an existing EC2 KeyPair."
+    },
+    "ODDSTRADERTaskDefinition": {
+        "Description": "Name of Task Definition and revision number",
+        "Type": "String",
+        "Default": "arn:755100727753.dkr.ecr.us-east-1.amazonaws.com:task-definition/time-off:1"
+    }
+  },
+  "Resources": {
+    "TOCluster": {
+      "Type": "AWS::ECS::Cluster"
+    },
+    "TOService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "TOCluster"
+        },
+        "DesiredCount": "1",
+        "TaskDefinition": {},
+        "LoadBalancers": [
+          {
+            "ContainerName": "time-off",
+            "ContainerPort": 80,
+            "LoadBalancerName": {
+              "Ref": "TOLoadBalancer"
+            }
+          }
+        ],
+        "Role": {
+          "Ref": "ODDSTRADERServiceRole"
+        },
+        "DeploymentConfiguration": {
+          "MinimumHealthyPercent": {}
+        }
+      }
+    },
+    "TOLaunchConfig": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "KeyName": { "Ref": "KeyName" },
+        "ImageId": {
+          "Fn::FindInMap": [
+            "InstanceAMIMap",
+            { "Ref": "AWS::Region" },
+            { "Ref": "Environment" }
+          ]
+        },
+        "SecurityGroups": [],
+        "InstanceType": {},
+        "IamInstanceProfile": "arn:aws:iam::755100727753:instance-profile/ecsInstanceRole",
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "echo 'ECS_CLUSTER=",
+                { "Ref": "TOCluster" },
+                "' > /etc/ecs/ecs.config\n"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "TOGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "VPCZoneIdentifier": {},
+        "LaunchConfigurationName": { "Ref": "TOLaunchConfig" },
+        "MinSize":"",
+        "MaxSize":"",
+        "HealthCheckGracePeriod": 600,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "TimeOff",
+            "PropagateAtLaunch": true
+          }
+        ],
+        "TerminationPolicies": ["OldestInstance", "OldestLaunchConfiguration"]
+      },
+      "UpdatePolicy": {
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": 1,
+          "MaxBatchSize": 1
+        }
+      },
+      "CreationPolicy": {
+        "ResourceSignal": {
+          "Count": "1",
+          "Timeout": "PT20M"
+        }
+      }
+    },
+    "TOLoadBalancer": {
+        "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+        "Condition": "InProduction",
+        "Properties": {
+          "ConnectionDrainingPolicy": {
+            "Enabled": true,
+            "Timeout": 300
+          },
+          "CrossZone": true,
+          "HealthCheck": {
+            "HealthyThreshold": "3",
+            "Interval": "30",
+            "Target": "TCP:80",
+            "Timeout": "5",
+            "UnhealthyThreshold": "5"
+          },
+          "Listeners": [
+            {
+              "InstancePort": "80",
+              "InstanceProtocol": "TCP",
+              "LoadBalancerPort": "80",
+              "Protocol": "TCP"
+            }            
+          ],
+          "Scheme": "internet-facing"
+          },
+          "SecurityGroups": [],
+          "Subnets": {}
+        }
+      }
+  }
+  "Outputs": {
+    "ClusterName": {
+      "Description": "ECS Cluster Name",
+      "Value": { "Ref": "ClusterName" }
+    },
+    "ASGNames": {
+      "Description": "AutoScaling Group Name",
+      "Value": {
+        "Fn::Join": ["", ["[", "\"", { "Ref": "MSGroup" }, "\"", "]"]]
+      }
+    }
+  }
+}
