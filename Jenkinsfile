@@ -10,7 +10,7 @@ pipeline {
                 sh "docker container prune -f"
                 sh "docker image prune -a -f"
                 sh "pwd"
-                sh "mkdir application 
+                sh "mkdir application"
                 sh "cp ./Dockerfile ./application/" 
                 sh "cd application"
                 sh "pwd"
