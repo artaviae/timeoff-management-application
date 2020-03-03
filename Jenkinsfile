@@ -4,17 +4,18 @@ pipeline {
     stages {
        stage('Build') {
           steps {
-             echo 'Hello World'
+             docker build . -t 755100727753.dkr.ecr.us-east-1.amazonaws.com/time-off:v_$BUILD_NUMBER
           }
        }
        stage('Push') {
           steps {
-             echo 'Hello World'
+             docker tag 755100727753.dkr.ecr.us-east-1.amazonaws.com/time-off:v_$BUILD_NUMBER docker tag 755100727753.dkr.ecr.us-east-1.amazonaws.com/time-off:latest
+              
           }
        }
        stage('Deploy'){
            steps {
-             echo 'Hello World'
+             sh taskDefGenerator
            }
        }
     }
