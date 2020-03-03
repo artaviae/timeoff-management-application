@@ -9,7 +9,10 @@ pipeline {
                 echo "Cleaning Docker Environment"
                 sh "docker image prune -a -f"
                 sh "docker container prune -f"
-                sh "mkdir application && cp Dockerfile application/ && cd application"
+                sh "pwd"
+                sh "mkdir application 
+                sh "cp Dockerfile application/" 
+                sh "cd application"
                 sh "pwd"
             }
         }        
