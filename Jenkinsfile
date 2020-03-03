@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps{
-                pwd
-                ls
+                echo 'Test'
             }
         }
         stage('Push') {
