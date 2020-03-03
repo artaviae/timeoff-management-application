@@ -10,8 +10,8 @@ pipeline {
                 sh "docker container prune -f"
                 sh "docker image prune -a -f"
                 sh "pwd"
-                sh "mkdir /var/lib/jenkins/workspace/timeoff/application"
-                sh "cp ./Dockerfile ./application/" 
+                sh "mkdir /var/lib/jenkins/workspace/timeoff/test"
+                sh "cp ./Dockerfile ./test/" 
                 sh "cd application"
                 sh "pwd"
             }
