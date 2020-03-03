@@ -3,9 +3,7 @@ pipeline {
  
     stages {
         stage('Build') {
-            steps {
-                docker build -t time-off .
-            }
+            docker build -t time-off .
         }
         stage('Push') {
             steps {
