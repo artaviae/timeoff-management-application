@@ -9,11 +9,6 @@ pipeline {
                 echo "Cleaning Docker Environment"
                 sh "docker container prune -f"
                 sh "docker image prune -a -f"
-                sh "pwd"
-                sh "mkdir -p /var/lib/jenkins/workspace/timeoff/test"
-                sh "cp ./Dockerfile ./test/" 
-                sh "cd test"
-                sh "pwd"
             }
         }        
         stage('Build') {
