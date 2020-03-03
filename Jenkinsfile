@@ -5,6 +5,7 @@ pipeline {
         stage('Prep Environment') {
             steps{
                 echo "Log in to ECR"
+                sh "whoami"
                 sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 755100727753.dkr.ecr.us-east-1.amazonaws.com"
                 echo "Removing old Docker Images"
                 sh "docker prune -a -f"
