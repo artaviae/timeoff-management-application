@@ -5,7 +5,7 @@ pipeline {
         stage('Prep Environment') {
             steps{
                 echo "Log in to ECR"
-                sh "$(aws ecr get-login --no-include-email --region us-east-1)"
+                sh "\$(aws ecr get-login --no-include-email --region us-east-1)"
                 echo "Removing old Docker Images"
                 sh "docker prune -a -f"
             }
