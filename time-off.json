@@ -1,0 +1,18 @@
+{
+    "family": "time-off",
+    "containerDefinitions": [
+        {
+            "image": "755100727753.dkr.ecr.us-east-1.amazonaws.com/time-off:v_%BUILD_NUMBER%",
+            "name": "time-off",
+            "cpu": 10,
+            "memory": 256,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 5000,
+                    "hostPort": 80
+                }
+            ]
+        }
+    ]
+}
