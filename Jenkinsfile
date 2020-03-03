@@ -12,7 +12,7 @@ pipeline {
                 sh "pwd"
                 sh "mkdir /var/lib/jenkins/workspace/timeoff/test"
                 sh "cp ./Dockerfile ./test/" 
-                sh "cd application"
+                sh "cd test"
                 sh "pwd"
             }
         }        
